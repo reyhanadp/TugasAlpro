@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Compiler Value="C:\lazarus\fpc\2.6.2\bin\i386-win32\fpc.exe" Date="1125670419"/>
-  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -vewnhi &quot;-FiD:\Document\Data Smt. 1\Algoritma Ulang\tugas_besar\lib\i386-win32&quot; &quot;-FuD:\Document\Data Smt. 1\Algoritma Ulang\tugas_besar\&quot; &quot;-FUD:\Document\Data Smt. 1\Algoritma Ulang\tugas_besar\lib\i386-win32\&quot; -l tugas_besar.lpr"/>
+  <Compiler Value="D:\lazarus\fpc\2.6.2\bin\i386-win32\fpc.exe" Date="1125670419"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -vewnhi &quot;-FiD:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\lib\i386-win32&quot; &quot;-FuD:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\&quot; &quot;-FUD:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\lib\i386-win32\&quot; -l tugas_besar.lpr"/>
 </CONFIG>

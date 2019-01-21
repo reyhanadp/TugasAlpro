@@ -7,9 +7,43 @@ const
   username = 'reyhan';
   password = 'audian';
 
+
 var
   i: integer;
   x: integer;
+
+type
+  TSarray = array of string;
+
+
+  function Split(Texto, Delimitador: string): TSarray;
+
+  var
+    o: integer;
+    PosDel: integer;
+    Aux: string;
+
+  begin
+
+    o := 0;
+    Aux := Texto;
+    SetLength(Result, Length(Aux));
+
+    repeat
+
+      PosDel := Pos(Delimitador, Aux) - 1;
+
+      if PosDel = -1 then
+      begin
+        Result[o] := Aux;
+        break;
+      end;
+
+      Result[o] := copy(Aux, 1, PosDel);
+      Delete(Aux, 1, PosDel + Length(Delimitador));
+      Inc(o);
+    until Aux = '';
+  end;
 
   procedure login();
   var
@@ -113,16 +147,24 @@ var
 
   end;
 
+  procedure menu_data_dvd; forward;
+
   procedure input_data_dvd();
   var
     judul_film: string;
     genre: string;
     tahun: string;
     subtitle: string;
-    stock: integer;
+    stock: string;
     ulang: string;
+    infile: Text;
   begin
+
     repeat
+      Assign(infile,
+        'D:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\data_dvd.txt');
+      Append(infile);
+
       clrscr;
       gotoxy(1, 1);
       Write('++====================================================================================================================++');
@@ -182,6 +224,7 @@ var
       Write('||                                                                         ||                                         ||');
       gotoxy(1, 29);
       Write('++=========================================================================++=========================================++');
+
       gotoxy(4, 5);
       Write('Judul Film        : ');
       readln(judul_film);
@@ -197,17 +240,134 @@ var
       gotoxy(4, 9);
       Write('Stock             : ');
       readln(stock);
+
+      writeln(infile, judul_film + ',' + genre + ',' + tahun + ',' +
+        subtitle + ',' + stock);
+      Close(infile);
+
       gotoxy(4, 11);
       Write('Apakah anda ingin memasukan data lagi?[Y/N] ');
       readln(ulang);
     until (ulang = 'N') or (ulang = 'n');
+    menu_data_dvd();
+  end;
 
+  procedure tampil_data_dvd();
+  var
+    infile: Text;
+    isi: string;
+    all_array: TSarray;
+
+  begin
+    ClrScr;
+    gotoxy(1, 1);
+    Write('++====================================================================================================================++');
+    gotoxy(1, 2);
+    Write('||                                                     DATA DVD                                                       ||');
+    gotoxy(1, 3);
+    Write('++====================================================================================================================++');
+    gotoxy(1, 4);
+    Write('||                         JUDUL                        |         GENRE         | TAHUN |      SUBTITLE       |  STOK ||');
+    gotoxy(1, 5);
+    Write('++====================================================================================================================++');
+    Assign(infile,
+      'D:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\data_dvd.txt');
+    reset(infile);
+    i := 0;
+    while not EOF(infile) do
+    begin
+      readln(infile, isi);
+      all_array := Split(isi, ',');
+      gotoxy(1, 6 + i);
+      Write('||                                                      |                       |       |                     |       ||');
+      gotoxy(4, 6 + i);
+      Write(all_array[0]);
+      gotoxy(60, 6 + i);
+      Write(all_array[1]);
+      gotoxy(83, 6 + i);
+      Write(all_array[2]);
+      gotoxy(91, 6 + i);
+      Write(all_array[3]);
+      gotoxy(113, 6 + i);
+      Write(all_array[4]);
+      i := i + 1;
+    end;
+    Close(infile);
+    gotoxy(1, 6 + i);
+    Write('++====================================================================================================================++');
+    gotoxy(1, 8 + i);
+    Write('Tekan enter untuk kembali ke menu data dvd..');
+    readln();
+    menu_data_dvd;
+  end;
+
+  procedure isi_ubah_dvd;
+  begin
+    ClrScr;
+  end;
+
+  procedure ubah_data_dvd;
+  var
+    judul_cari: string;
+    infile: Text;
+    isi: string;
+    all_array: TSarray;
+    z: integer;
+    ulang: string;
+  begin
+    ClrScr;
+    z:=0;
+    gotoxy(1, 1);
+    Write('++====================================================================================================================++');
+    gotoxy(1, 2);
+    Write('||  Masukan judul DVD :                                                                                               ||');
+    gotoxy(1, 3);
+    Write('++====================================================================================================================++');
+    gotoxy(25, 2);
+    readln(judul_cari);
+    Write('++====================================================================================================================++');
+    Assign(infile,
+      'D:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\data_dvd.txt');
+    reset(infile);
+    while not EOF(infile) do
+    begin
+      readln(infile, isi);
+      all_array := Split(isi, ',');
+      if all_array[0] = judul_cari then
+      begin
+        z := 1;
+        Break;
+      end;
+    end;
+    Close(infile);
+    if z = 1 then
+    begin
+       ClrScr;
+       gotoxy(1, 1);
+       Write('++====================================================================================================================++');
+    end
+    else
+    begin
+      gotoxy(1, 5);
+      Write('Data tidak ditemukan !!, apakah Anda ingin melakukan pencarian judul lagi? [Y/N]');
+      readln(ulang);
+      if (ulang = 'Y') or (ulang ='y') then
+      begin
+         ubah_data_dvd;
+      end
+      else
+      begin
+        menu_data_dvd;
+      end;
+
+    end;
   end;
 
   procedure menu_data_dvd();
   var
     pilihan: integer;
   begin
+    ClrScr;
     gotoxy(35, 3);
     writeln('============================================');
     Delay(200);
@@ -252,7 +412,7 @@ var
     else
     if pilihan = 2 then
     begin
-
+      tampil_data_dvd();
     end
     else
     if pilihan = 3 then
@@ -354,7 +514,9 @@ begin
   x := 1;
   if x = 1 then
   begin
-    input_data_dvd();
+    ubah_data_dvd;
+    //tampil_data_dvd();
+    //input_data_dvd();
     //menu_utama();
   end;
 
