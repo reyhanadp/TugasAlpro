@@ -6,14 +6,22 @@ uses
 const
   username = 'reyhan';
   password = 'audian';
+  maks = 100;
 
+type
+  TSarray = array of string;
+
+  tipe_dvd = record
+    judul_dvd: string;
+    genre: string;
+    tahun: string;
+    subtitle: string;
+    stock: string;
+  end;
 
 var
   i: integer;
   x: integer;
-
-type
-  TSarray = array of string;
 
 
   function Split(Texto, Delimitador: string): TSarray;
@@ -159,10 +167,10 @@ type
     ulang: string;
     infile: Text;
   begin
-
+    ClrScr;
     repeat
       Assign(infile,
-        'D:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\data_dvd.txt');
+        'C:\Users\reyha\OneDrive\Desktop\tugas_besar_alpro_ulang\data_dvd.txt');
       Append(infile);
 
       clrscr;
@@ -271,7 +279,7 @@ type
     gotoxy(1, 5);
     Write('++====================================================================================================================++');
     Assign(infile,
-      'D:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\data_dvd.txt');
+      'C:\Users\reyha\OneDrive\Desktop\tugas_besar_alpro_ulang\data_dvd.txt');
     reset(infile);
     i := 0;
     while not EOF(infile) do
@@ -301,9 +309,162 @@ type
     menu_data_dvd;
   end;
 
-  procedure isi_ubah_dvd;
+  procedure hapus_data_dvd(posisi: integer);
+  var
+    infile: Text;
+    isi: string;
+    j: integer;
+    k: integer;
+    all_array: TSarray;
+    data_dvd: array[1..maks] of tipe_dvd;
   begin
-    ClrScr;
+    Assign(infile, 'C:\Users\reyha\OneDrive\Desktop\tugas_besar_alpro_ulang\data_dvd.txt');
+    Reset(infile);
+    j := 1;
+    k := 1;
+    while not EOF(infile) do
+    begin
+      readln(infile, isi);
+      all_array := Split(isi, ',');
+      if j <> posisi then
+      begin
+        data_dvd[k].judul_dvd := all_array[0];
+        data_dvd[k].genre := all_array[1];
+        data_dvd[k].tahun := all_array[2];
+        data_dvd[k].subtitle := all_array[3];
+        data_dvd[k].stock := all_array[4];
+        k := k + 1;
+      end;
+      j := j + 1;
+    end;
+    Rewrite(infile);
+
+    for i := 1 to k - 1 do
+    begin
+      writeln(infile, data_dvd[i].judul_dvd + ',' + data_dvd[i].genre +
+        ',' + data_dvd[i].tahun + ',' + data_dvd[i].subtitle + ',' + data_dvd[i].stock);
+    end;
+
+    Close(infile);
+    gotoxy(25, 11);
+    writeln('=============================================================================');
+    gotoxy(25, 12);
+    writeln('|     Data Berhasil Dihapus, Tekan Enter Untuk Kembali ke Menu Data DVD     |');
+    gotoxy(25, 13);
+    writeln('=============================================================================');
+    ReadLn;
+    menu_data_dvd;
+  end;
+
+  procedure isi_ubah_dvd(judul, genre, tahun, subtitle, stock: string);
+  var
+    temp_dvd: tipe_dvd;
+    data_dvd: array[1..maks] of tipe_dvd;
+    infile: Text;
+    isi: string;
+    j: integer;
+    k: integer;
+    all_array: TSarray;
+    yakin: string;
+  begin
+    gotoxy(1, 1);
+    Write('++====================================================================================================================++');
+    gotoxy(1, 2);
+    Write('||                                                  UBAH DATA DVD                                                     ||');
+    gotoxy(1, 3);
+    Write('++=========================================================++=========================================================++');
+    gotoxy(1, 4);
+    Write('||                                                         ||                                                         ||');
+    gotoxy(1, 5);
+    Write('||                          DATA LAMA                      ||                        DATA BARU                        ||');
+    for i := 1 to 23 do
+    begin
+      gotoxy(1, 5 + i);
+      Write(
+        '||                                                         ||                                                         ||');
+    end;
+    gotoxy(1, 29);
+    Write('++=========================================================================++=========================================++');
+    gotoxy(4, 7);
+    Write('JUDUL FILM : ', judul);
+    gotoxy(4, 8);
+    Write('GENRE      : ', genre);
+    gotoxy(4, 9);
+    Write('TAHUN      : ', tahun);
+    gotoxy(4, 10);
+    Write('SUBTITLE   : ', subtitle);
+
+    gotoxy(63, 7);
+    Write('JUDUL FILM : ');
+    ReadLn(temp_dvd.judul_dvd);
+    gotoxy(63, 8);
+    Write('GENRE      : ');
+    ReadLn(temp_dvd.genre);
+    gotoxy(63, 9);
+    Write('TAHUN      : ');
+    ReadLn(temp_dvd.tahun);
+    gotoxy(63, 10);
+    Write('SUBTITLE   : ');
+    ReadLn(temp_dvd.subtitle);
+    temp_dvd.stock := stock;
+
+    gotoxy(63, 11);
+    Write('Apakah Anda Yakin Merubah Data DVD?[Y/N] ');
+    ReadLn(yakin);
+
+    if (yakin = 'n') or (yakin = 'N') then
+    begin
+      menu_data_dvd;
+    end
+    else
+    begin
+
+      Assign(infile, 'C:\Users\reyha\OneDrive\Desktop\tugas_besar_alpro_ulang\data_dvd.txt');
+      Reset(infile);
+      k := 1;
+      while not EOF(infile) do
+      begin
+        readln(infile, isi);
+        all_array := Split(isi, ',');
+        if all_array[0] <> judul then
+        begin
+          data_dvd[k].judul_dvd := all_array[0];
+          data_dvd[k].genre := all_array[1];
+          data_dvd[k].tahun := all_array[2];
+          data_dvd[k].subtitle := all_array[3];
+          data_dvd[k].stock := all_array[4];
+        end
+        else
+        begin
+          data_dvd[k].judul_dvd := temp_dvd.judul_dvd;
+          data_dvd[k].genre := temp_dvd.genre;
+          data_dvd[k].tahun := temp_dvd.tahun;
+          data_dvd[k].subtitle := temp_dvd.subtitle;
+          data_dvd[k].stock := temp_dvd.stock;
+        end;
+        k := k + 1;
+      end;
+      Rewrite(infile);
+
+      for i := 1 to k - 1 do
+      begin
+        writeln(infile, data_dvd[i].judul_dvd + ',' + data_dvd[i].genre +
+          ',' + data_dvd[i].tahun + ',' + data_dvd[i].subtitle + ',' +
+          data_dvd[i].stock);
+      end;
+
+      Close(infile);
+      ClrScr;
+      gotoxy(25, 11);
+      writeln('=============================================================================');
+      gotoxy(25, 12);
+      writeln('|     Data Berhasil Diubah , Tekan Enter Untuk Kembali ke Menu Data DVD     |');
+      gotoxy(25, 13);
+      writeln('=============================================================================');
+      ReadLn;
+      menu_data_dvd;
+
+    end;
   end;
 
   procedure ubah_data_dvd;
@@ -314,9 +475,11 @@ type
     all_array: TSarray;
     z: integer;
     ulang: string;
+    pilihan: integer;
+    j: integer;
   begin
     ClrScr;
-    z:=0;
+    z := 0;
     gotoxy(1, 1);
     Write('++====================================================================================================================++');
     gotoxy(1, 2);
@@ -327,8 +490,9 @@ type
     readln(judul_cari);
     Write('++====================================================================================================================++');
     Assign(infile,
-      'D:\Jauhar\kuliah\semester 1\algoritma\ulang\tugas_besar_alpro_ulang-master\data_dvd.txt');
+      'C:\Users\reyha\OneDrive\Desktop\tugas_besar_alpro_ulang\data_dvd.txt');
     reset(infile);
+    j := 1;
     while not EOF(infile) do
     begin
       readln(infile, isi);
@@ -338,22 +502,96 @@ type
         z := 1;
         Break;
       end;
+      j := j + 1;
     end;
     Close(infile);
     if z = 1 then
     begin
-       ClrScr;
-       gotoxy(1, 1);
-       Write('++====================================================================================================================++');
+      ClrScr;
+      gotoxy(1, 1);
+      Write('++====================================================================================================================++');
+      gotoxy(1, 2);
+      Write('||                                            DATA DVD DITEMUKAN                                                      ||');
+      gotoxy(1, 3);
+      Write('++====================================================================================================================++');
+      gotoxy(1, 4);
+      Write('||                                                                                                                    ||');
+      gotoxy(1, 5);
+      Write('|| JUDUL :                                                                                                            ||');
+      gotoxy(12, 5);
+      Write(all_array[0]);
+      gotoxy(1, 6);
+      Write('|| GENRE :                                                                                                            ||');
+      gotoxy(12, 6);
+      Write(all_array[1]);
+      gotoxy(1, 7);
+      Write('|| TAHUN :                                                                                                            ||');
+      gotoxy(12, 7);
+      Write(all_array[2]);
+      gotoxy(1, 8);
+      Write('|| SUBTITLE :                                                                                                         ||');
+      gotoxy(15, 8);
+      Write(all_array[3]);
+      gotoxy(1, 9);
+      Write('|| STOCK :                                                                                                            ||');
+      gotoxy(12, 9);
+      Write(all_array[4]);
+      gotoxy(1, 10);
+      Write('||                                                                                                                    ||');
+      gotoxy(1, 11);
+      Write('|| ++====================================================++                                                           ||');
+      gotoxy(1, 12);
+      Write('|| ||          Pilih ubah atau hapus data DVD            ||                                                           ||');
+      gotoxy(1, 13);
+      Write('|| ++====================================================++                                                           ||');
+      gotoxy(1, 14);
+      Write('|| ||   1. Hapus Data DVD                                ||                                                           ||');
+      gotoxy(1, 15);
+      Write('|| ||   2. Ubah Data DVD                                 ||                                                           ||');
+      gotoxy(1, 16);
+      Write('|| ||   3. Kembali Ke Menu Data DVD                      ||                                                           ||');
+      gotoxy(1, 17);
+      Write('|| ++====================================================++                                                           ||');
+      gotoxy(1, 18);
+      Write('|| ||   Pilihan Anda :                                   ||                                                           ||');
+      gotoxy(1, 19);
+      Write('|| ++====================================================++                                                           ||');
+      for i := 1 to 9 do
+      begin
+        gotoxy(1, 19 + i);
+        Write(
+          '||                                                                                                                    ||');
+      end;
+      gotoxy(1, 29);
+      Write('++====================================================================================================================++');
+      gotoxy(25, 18);
+      ReadLn(pilihan);
+      if pilihan = 1 then
+      begin
+        ClrScr;
+        hapus_data_dvd(j);
+      end
+      else
+      if pilihan = 2 then
+      begin
+        ClrScr;
+        isi_ubah_dvd(all_array[0], all_array[1], all_array[2],
+          all_array[3], all_array[4]);
+      end
+      else
+      begin
+        ClrScr;
+        menu_data_dvd;
+      end;
     end
     else
     begin
       gotoxy(1, 5);
       Write('Data tidak ditemukan !!, apakah Anda ingin melakukan pencarian judul lagi? [Y/N]');
       readln(ulang);
-      if (ulang = 'Y') or (ulang ='y') then
+      if (ulang = 'Y') or (ulang = 'y') then
       begin
-         ubah_data_dvd;
+        ubah_data_dvd;
       end
       else
       begin
@@ -362,6 +600,174 @@ type
 
     end;
   end;
+
+  procedure cari_data_dvd();
+  var
+    pilihan: integer;
+    cari: string;
+    temp_dvd: tipe_dvd;
+    data_dvd: array[1..maks] of tipe_dvd;
+    infile: Text;
+    isi: string;
+    j: integer;
+    //k: integer;
+    all_array: TSarray;
+  begin
+    ClrScr;
+    gotoxy(35, 3);
+    writeln('============================================');
+    Delay(200);
+    gotoxy(35, 4);
+    writeln('|            Cari Data Berdasarkan         |');
+    Delay(200);
+    gotoxy(35, 5);
+    writeln('============================================');
+    Delay(200);
+    gotoxy(35, 6);
+    writeln('|  1. Judul Film                           |');
+    Delay(200);
+    gotoxy(35, 7);
+    writeln('|  2. Genre Film                           |');
+    Delay(200);
+    gotoxy(35, 8);
+    writeln('|  3. Tahun Keluar Film                     |');
+    Delay(200);
+    gotoxy(35, 9);
+    writeln('|  4. Subtitle                             |');
+    Delay(200);
+    gotoxy(35, 10);
+    writeln('|  0. Kembali Ke Menu Data DVD             |');
+    Delay(200);
+    gotoxy(35, 11);
+    writeln('============================================');
+    Delay(200);
+    gotoxy(35, 12);
+    writeln('|  Pilihan Anda :                          |');
+    Delay(200);
+    gotoxy(35, 13);
+    writeln('============================================');
+    gotoxy(53, 12);
+    ReadLn(pilihan);
+    if pilihan = 0 then
+    begin
+      menu_data_dvd;
+    end;
+
+    ClrScr;
+    gotoxy(1, 1);
+    Write('++====================================================================================================================++');
+    if pilihan = 1 then
+    begin
+      gotoxy(1, 2);
+      Write('||  Masukan Judul Film :                                                                                              ||');
+      gotoxy(1, 3);
+      Write('++====================================================================================================================++');
+      gotoxy(26, 2);
+      readln(cari);
+    end
+    else
+    if pilihan = 2 then
+    begin
+      gotoxy(1, 2);
+      Write('||  Masukan Genre :                                                                                                   ||');
+      gotoxy(1, 3);
+      Write('++====================================================================================================================++');
+      gotoxy(21, 2);
+      readln(cari);
+    end
+    else
+    if pilihan = 3 then
+    begin
+      gotoxy(1, 2);
+      Write('||  Masukan Tahun Keluar Film :                                                                                       ||');
+      gotoxy(1, 3);
+      Write('++====================================================================================================================++');
+      gotoxy(33, 2);
+      readln(cari);
+    end
+    else
+    if pilihan = 4 then
+    begin
+      gotoxy(1, 2);
+      Write('||  Masukan Subtitle :                                                                                                ||');
+      gotoxy(1, 3);
+      Write('++====================================================================================================================++');
+      gotoxy(24, 2);
+      readln(cari);
+    end;
+
+    Assign(infile,
+      'C:\Users\OPERATOR\Desktop\tugas_besar_alpro_ulang\data_dvd.txt');
+    reset(infile);
+    j := 1;
+    while not EOF(infile) do
+    begin
+      readln(infile, isi);
+      all_array := Split(isi, ',');
+
+      if all_array[pilihan - 1] = cari then
+      begin
+        data_dvd[j].judul_dvd := all_array[0];
+        data_dvd[j].genre := all_array[1];
+        data_dvd[j].tahun := all_array[2];
+        data_dvd[j].subtitle := all_array[3];
+        data_dvd[j].stock := all_array[4];
+        j := j + 1;
+      end;
+
+    end;
+    Close(infile);
+    ClrScr;
+    gotoxy(1, 1);
+    Write('++====================================================================================================================++');
+    gotoxy(1, 2);
+    Write('||                                              HASIL CARI DATA DVD                                                   ||');
+    gotoxy(1, 3);
+    Write('++====================================================================================================================++');
+    gotoxy(1, 4);
+    Write('||                         JUDUL                        |         GENRE         | TAHUN |      SUBTITLE       |  STOK ||');
+    gotoxy(1, 5);
+    Write('++====================================================================================================================++');
+
+    if j = 1 then
+    begin
+      gotoxy(1, 5 + j);
+      Write('||                                           DATA TIDAK DITEMUKAN                                                     ||');
+      gotoxy(1, 6 + j);
+      Write('++====================================================================================================================++');
+      gotoxy(1, 8 + j);
+      Write('Tekan enter untuk kembali ke menu data dvd..');
+      readln();
+      menu_data_dvd;
+    end
+    else
+    begin
+
+      for i := 1 to j - 1 do
+      begin
+        gotoxy(1, 5 + i);
+        Write('||                                                      |                       |       |                     |       ||');
+        gotoxy(4, 5 + i);
+        Write(data_dvd[i].judul_dvd);
+        gotoxy(60, 5 + i);
+        Write(data_dvd[i].genre);
+        gotoxy(83, 5 + i);
+        Write(data_dvd[i].tahun);
+        gotoxy(91, 5 + i);
+        Write(data_dvd[i].subtitle);
+        gotoxy(113, 5 + i);
+        Write(data_dvd[i].stock);
+      end;
+      gotoxy(1, 6 + i);
+      Write('++====================================================================================================================++');
+      gotoxy(1, 8 + i);
+      Write('Tekan enter untuk kembali ke menu data dvd..');
+      readln();
+      menu_data_dvd;
+    end;
+  end;
+
+  procedure menu_utama(); forward;
 
   procedure menu_data_dvd();
   var
@@ -384,7 +790,7 @@ type
     writeln('|  2. Tampil Data DVD                      |');
     Delay(200);
     gotoxy(35, 8);
-    writeln('|  3. Ubah Data DVD                        |');
+    writeln('|  3. Ubah Atau Hapus Data DVD             |');
     Delay(200);
     gotoxy(35, 9);
     writeln('|  4. Cari Data DVD                        |');
@@ -406,7 +812,6 @@ type
     readln(pilihan);
     if pilihan = 1 then
     begin
-      clrscr;
       input_data_dvd();
     end
     else
@@ -417,12 +822,17 @@ type
     else
     if pilihan = 3 then
     begin
-
+      ubah_data_dvd;
     end
     else
     if pilihan = 4 then
     begin
-
+      cari_data_dvd();
+    end
+    else
+    begin
+      ClrScr;
+      menu_utama();
     end;
 
   end;
@@ -514,10 +924,12 @@ begin
   x := 1;
   if x = 1 then
   begin
-    ubah_data_dvd;
+    //ubah_data_dvd;
     //tampil_data_dvd();
     //input_data_dvd();
     //menu_utama();
+    //menu_data_dvd();
+    cari_data_dvd();
   end;
 
   readln();
