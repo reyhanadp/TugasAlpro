@@ -1,2 +1,3 @@
-robot,komedi,2016,inglis,10
-dfg,gfhgfh,gfhf,ghjhgj,khjk
+asd,oiu,2010,ind,6
+astorr,gfhgfh,gfhf,ghjhgj,10
+dfg,gfhgfh,gfhf,ghjhgj,5
